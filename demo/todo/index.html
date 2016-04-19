@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>slot-ui simple todo list</title>
+    <style>
+        .app {
+            padding: 32px;
+            font-size: 20px;
+        }
+
+        .app__header,
+        .app__list {
+            margin-bottom: 8px;
+        }
+
+        .add {
+            width: 100%;
+            padding: 8px;
+            font-size: 20px;
+        }
+
+        .item {
+            cursor: pointer;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .item._done {
+            text-decoration: line-through;
+        }
+
+        .delete:hover {
+            opacity: .75;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/dist/bundle.js"></script>
+</body>
+</html>
