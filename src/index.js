@@ -5,7 +5,13 @@ import { hashHandler, hashKey, getHashPath, joinPathToHash, nextHash } from './u
 import { resolveHandlers } from './events';
 
 const ROOT_ID = 'root';
-const EVENTS = ['click', 'keydown', 'input', 'change'];
+const EVENTS_ON_BUBBLE = [
+    'click', 'dblclick', 'mousedown', 'mouseup',
+    'keypress', 'keydown', 'keyup', 'input', 'change'
+];
+const EVENTS_ON_CAPTURE = [
+    'focus', 'blur'
+]
 
 /**
  * Root is for:
@@ -52,7 +58,8 @@ export default class Root {
         this.slot.node = node;
         this.slot.moduleInstance.renderTo(this.slot.node);
 
-        EVENTS.forEach(eventType => node.addEventListener(eventType, resolveHandlers(eventType, this.handlers)));
+        EVENTS_ON_BUBBLE.forEach(eventType => node.addEventListener(eventType, resolveHandlers(eventType, this.handlers)));
+        EVENTS_ON_CAPTURE.forEach(eventType => node.addEventListener(eventType, resolveHandlers(eventType, this.handlers), true));
     }
 
     queryRef(hash) {
