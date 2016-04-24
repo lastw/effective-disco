@@ -17,6 +17,10 @@ export default class ModuleInstance {
     }
 
     render() {
+        if (typeof this.view == 'string') {
+            return this.view;
+        }
+
         return this.view.template(this.view.context);
     }
 
