@@ -29,3 +29,11 @@ export function hashRef(moduleId, key = '') {
 export function getHashPath(hash) {
     return hash.split(':');
 }
+
+export function joinPathToHash(keyPath, fnPath) {
+    return [keyPath, fnPath].join(':');
+}
+
+export function nextHash(hash) {
+    return hashString(hash + '!'); // dumb way to generate next hash
+}

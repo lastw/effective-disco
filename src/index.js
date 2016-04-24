@@ -1,7 +1,7 @@
 import ModuleInstance from './module';
 import Slot from './slot';
 import { tree } from './tools';
-import { hashHandler, hashKey, getHashPath } from './utils';
+import { hashHandler, hashKey, getHashPath, joinPathToHash, nextHash } from './utils';
 import { resolveHandlers } from './events';
 
 const ROOT_ID = 'root';
@@ -27,10 +27,13 @@ export default class Root {
 
     registerHandler(moduleId, fn) {
         const hash = hashHandler(moduleId, fn);
-        const path = getHashPath(hash);
-        this.handlers[path[0]] = this.handlers[path[0]] || {};
-        this.handlers[path[0]][path[1]] = fn;
-        return hash;
+        const [modulePath, fnPath] = getHashPath(hash);
+
+        this.handlers[modulePath] = this.handlers[modulePath] || {};
+
+        const resultFnPath = addUniqHash(this.handlers[modulePath], fnPath, fn);
+
+        return joinPathToHash(modulePath, resultFnPath);
     }
 
     removeHandlers(moduleId) {
@@ -59,6 +62,19 @@ export default class Root {
     _tree() {
         tree(this.slot);
     }
+}
+
+function addUniqHash(handlers, hash, fn) {
+    if (!handlers[hash]) {
+        handlers[hash] = fn;
+        return hash;
+    }
+
+    if (handlers[hash] == fn) {
+        return hash;
+    }
+
+    return addUniqHash(handlers, nextHash(hash), fn);
 }
 
 // @TODO some handlers have same toString, think about it
