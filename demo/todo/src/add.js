@@ -1,6 +1,4 @@
 function Add(slot) {
-    const template = require('./templates/add');
-
     return function({ onSave }, state = { value: '' }) {
 
         const handleInput = function() {
@@ -16,16 +14,14 @@ function Add(slot) {
             }
         };
 
-        return {
-            template: template,
-
-            context: {
-                ref: slot.ref(),
-                value: state.value,
-                handleInput: slot.handler(handleInput),
-                handleKeydown: slot.handler(handleKeydown)
-            }
-        };
+        return `
+            <input class="add"
+                value="${state.value}"
+                data-ref="${slot.ref()}"
+                placeholder="What needs to be done?"
+                data-oninput="${slot.handler(handleInput)}"
+                data-onkeydown="${slot.handler(handleKeydown)}"/>
+        `;
     };
 }
 

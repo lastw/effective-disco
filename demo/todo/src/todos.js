@@ -1,50 +1,32 @@
 function TodoItem(slot) {
-    const template = require('./templates/item');
-
     return function({ text = '', done = false, onClick, onRemoveClick }) {
-
         const remove = slot.init(Remove, { onClick: onRemoveClick });
 
-        return {
-            template: template,
-
-            context: {
-                text,
-                done,
-                handleClick: slot.handler(onClick),
-
-                remove
-            }
-        };
-    };
-}
-
-function TodoList(slot) {
-    const template = require('./templates/list');
-
-    return function(list = []) {
-        const items = list.map(item => slot.init(TodoItem, item, item.id));
-
-        return {
-            template: template,
-
-            context: {
-                items
-            }
-        };
+        return `
+            <div class="item ${done ? '_done' : ''}" data-onclick=${slot.handler(onClick)}>
+                ${text} ${remove}
+            </div>
+        `;
     };
 }
 
 function Remove(slot) {
     return function({ onClick }) {
-        return {
-            template: ({ handleClick }) => `<span class="delete" data-onclick="${handleClick}">✖</span>`,
-
-            context: {
-                handleClick: slot.handler(onClick)
-            }
-        };
+        return `<span class="delete" data-onclick="${slot.handler(onClick)}">✖</span>`;
     };
 }
 
-export { TodoItem, TodoList };
+function TodoList(slot) {
+    return function(list = []) {
+        const items = list.map(item => slot.init(TodoItem, item, item.id));
+
+        return `
+            <div class="list">
+                ${items.join('')}
+            </div>
+        `;
+    };
+}
+
+
+export { TodoList };

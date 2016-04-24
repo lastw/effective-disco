@@ -4,8 +4,6 @@ import { Filters } from './filters';
 import Store from './store';
 
 function App(slot) {
-    const template = require('./templates/app');
-
     const store = new Store({
         todos: [
             {
@@ -39,15 +37,13 @@ function App(slot) {
             onChange: value => store.setFilter(value)
         });
 
-        return {
-            template: template,
-
-            context: {
-                add,
-                list,
-                filters
-            }
-        };
+        return `
+            <div class="app">
+                <header class="app__header">${add}</header>
+                <div class="app__list">${list}</div>
+                <footer class="app__footer">${filters}</footer>
+            </div>
+        `;
     };
 }
 
