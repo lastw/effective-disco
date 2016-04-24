@@ -18,10 +18,10 @@ export default class ModuleInstance {
 
     render() {
         if (typeof this.view == 'string') {
-            return this.view;
+            return this.view.trim(); // trim for morphdom: https://github.com/patrick-steele-idem/morphdom/issues/51
         }
 
-        return this.view.template(this.view.context);
+        return this.view.template(this.view.context).trim();
     }
 
     toString() {
@@ -29,12 +29,20 @@ export default class ModuleInstance {
     }
 
     renderTo(node) {
-        morphChildren(node, this.render());
+        return morphChildren(node, this.render());
+    }
+
+    renderOver(node) {
+        return morphdom(node, this.render());
     }
 
     updateView(props) {
         this._props = props;
-        this.view = this.getView(props);
+        this.view = this.getView(props, this._state);
+    }
+
+    updateState(state) {
+        this._state = {...state};
     }
 }
 

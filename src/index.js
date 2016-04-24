@@ -56,7 +56,7 @@ export default class Root {
     }
 
     queryRef(hash) {
-        return this.slot.node.querySelector(`[data-ref="${hash}"]`);
+        return this.slot.node.querySelectorAll(`[data-ref="${hash}"]`);
     }
 
     _tree() {

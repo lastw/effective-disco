@@ -75,18 +75,22 @@ export default class Slot {
      */
     ref(key) {
         const hash = hashRef(this.id, key);
-        this.refs[key] = hash;
+        this.refs[key] = hash; // @TODO clean this.refs?
         return hash;
     }
 
     /**
-     * Get node, associated with specified ref
+     * Get nodes, associated with specified ref
      * (maybe it is bad idea)
      * @param {String} [key]
      * @return {Element}
      */
-    getNode(key) {
+    getNodes(key) {
         const hash = this.refs[key];
+        if (!hash) {
+            return [];
+        }
+
         return this.root.queryRef(hash);
     }
 
@@ -98,12 +102,22 @@ export default class Slot {
         this.removeHandlers();
         this.update(props);
 
-        // @TODO think about binding module to node via ref/getNode
-        // now only root module is able to rerender
-        if (!this.node) {
-            throw new Error('There is no node associated with this module instance');
+        if (this.node) { // mounted root element
+            return this.moduleInstance.renderTo(this.node);
         }
-        this.moduleInstance.renderTo(this.node);
+
+        const nodes = this.getNodes();
+
+        if (nodes.length > 1) {
+            throw new Error('There are more than 1 nodes, matching this module\'s ref. Can not choose one');
+        }
+
+        if (nodes[0]) {
+            return this.moduleInstance.renderOver(nodes[0]);
+        }
+
+        // @TODO think about bubbling to nearest rerenderable parent
+        throw new Error('There is no node associated with this module instance');
     }
 
     /**
@@ -125,6 +139,11 @@ export default class Slot {
         this.root.removeHandlers(this.id);
 
         this.children.forEach(slot => slot.removeHandlers());
+    }
+
+    setState(state) {
+        this.moduleInstance.updateState(state);
+        this.rerender(this.moduleInstance._props);
     }
 }
 
